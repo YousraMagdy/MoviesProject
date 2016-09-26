@@ -85,12 +85,13 @@ public class MainFragment extends Fragment {
                                             @Override
                                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                                                 Extra forecast = mMovieAdapter.getItem(position);
-                                                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                                                Intent intent = new Intent(getActivity(), Trailers.class)
                                                         .putExtra(Intent.EXTRA_TEXT, forecast.Title)
                                                         .putExtra("image", forecast.image)
                                                         .putExtra("overview", forecast.OverView)
                                                         .putExtra("vote", forecast.Vote)
-                                                        .putExtra("date", forecast.Date);
+                                                        .putExtra("date", forecast.Date)
+                                                .putExtra("id", forecast.ID);
 
                                                 startActivity(intent);
                                             }});
@@ -106,6 +107,7 @@ public class MainFragment extends Fragment {
 
         FetchMovieTask movieTask = new FetchMovieTask();
         movieTask.execute("");
+
         Log.v(LOG_TAG, "pass here2");
 
 
@@ -129,6 +131,7 @@ public class MainFragment extends Fragment {
             final String OWM_TITLE = "original_title";
             final String OWM_VOTE = "vote_average";
             final String OWM_DATE = "release_date";
+            final String OWM_ID = "id";
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(OWM_LIST);
@@ -140,6 +143,8 @@ public class MainFragment extends Fragment {
             String[] resultStrs2 = new String[number];
             String[] resultStrs3 = new String[number];
             String[] resultStrs4 = new String[number];
+            String[] resultStrs5 = new String[number];
+
             //added
 
             final String OWM_TOTAL = "http://image.tmdb.org/t/p/w185/";
@@ -154,6 +159,7 @@ public class MainFragment extends Fragment {
                 String title;
                 String vote;
                 String date;
+                String id;
 
                 JSONObject dayMovies = movieArray.getJSONObject(i);
 
@@ -164,6 +170,7 @@ public class MainFragment extends Fragment {
                 title = dayMovies.getString(OWM_TITLE);
                 vote = dayMovies.getString(OWM_VOTE);
                 date = dayMovies.getString(OWM_DATE);
+                id = dayMovies.getString(OWM_ID);
 
 
 
@@ -172,17 +179,20 @@ public class MainFragment extends Fragment {
                 resultStrs2[i] = title;
                 resultStrs3[i] = vote;
                 resultStrs4[i] = date;
+                resultStrs5[i] = id;
 
 
-                extra[i] = new Extra(title,description,over,vote,date);
+                extra[i] = new Extra(title,description,over,vote,date,id);
 
             }
 
             for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Movies entry: " + s);
+
             }
-            for (String o : resultStrs2) {
-                Log.v(LOG_TAG, "Title: " + o);
+            for (String o : resultStrs5) {
+                Log.v(LOG_TAG, "ID: " + o);
+
             }
 
 
@@ -240,7 +250,6 @@ public class MainFragment extends Fragment {
 
                 final String FORECAST_BASE_URL =
 
-                        //  "https://api.themoviedb.org/3/discover/movie?sort_by=rates-desc&api_key=47a83e8b6ea24d82f5e1befdee45f893";
 
                         "http://api.themoviedb.org/3/movie/"+output+"?";
 
